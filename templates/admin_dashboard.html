@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row">
+    <div class="col">
+        <h2>Admin Dashboard</h2>
+        <hr>
+        <div class="row text-center mb-4">
+            <div class="col-md-3">
+                <div class="card text-bg-primary mb-3">
+                    <div class="card-body">
+                        <h5 class="card-title">Total Treks</h5>
+                        <p class="card-text fs-3">0</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-bg-success mb-3">
+                    <div class="card-body">
+                        <h5 class="card-title">Total Users</h5>
+                        <p class="card-text fs-3">0</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-bg-warning mb-3">
+                    <div class="card-body">
+                        <h5 class="card-title">Total Staff</h5>
+                        <p class="card-text fs-3">0</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-bg-info mb-3">
+                    <div class="card-body">
+                        <h5 class="card-title">Total Bookings</h5>
+                        <p class="card-text fs-3">0</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <h4>Actions</h4>
+        <div class="list-group">
+            <a href="#" class="list-group-item list-group-item-action">Manage Treks</a>
+            <a href="#" class="list-group-item list-group-item-action">Manage Staff</a>
+            <a href="#" class="list-group-item list-group-item-action">Manage Users</a>
+            <a href="#" class="list-group-item list-group-item-action">View Bookings</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
