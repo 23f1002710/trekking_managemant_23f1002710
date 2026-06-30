@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col">
+        <a href="{{ url_for('staff_dashboard') }}" class="btn btn-outline-secondary mb-3">&larr; Back to Dashboard</a>
+        <h2>Participants for {{ trek.name }}</h2>
+        <p class="text-muted">Location: {{ trek.location }} | Dates: {{ trek.start_date }} to {{ trek.end_date }}</p>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle shadow-sm bg-white rounded">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Booking ID</th>
+                        <th>Participant Name</th>
+                        <th>Email</th>
+                        <th>Booking Date</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for booking in bookings %}
+                    <tr>
+                        <td>#{{ booking.id }}</td>
+                        <td>{{ booking.user.username }}</td>
+                        <td>{{ booking.user.email }}</td>
+                        <td>{{ booking.booking_date.strftime('%Y-%m-%d') }}</td>
+                        <td>
+                            {% if booking.status == 'Booked' %} <span class="badge bg-primary">Booked</span>
+                            {% elif booking.status == 'Cancelled' %} <span class="badge bg-danger">Cancelled</span>
+                            {% elif booking.status == 'Completed' %} <span class="badge bg-success">Completed</span>
+                            {% else %} <span class="badge bg-secondary">{{ booking.status }}</span> {% endif %}
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="5" class="text-center">No participants found.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

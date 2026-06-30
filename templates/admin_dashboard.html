@@ -3,49 +3,61 @@
 {% block content %}
 <div class="row">
     <div class="col">
-        <h2>Admin Dashboard</h2>
-        <hr>
+        <h2 class="mb-4">Admin Dashboard</h2>
+        
         <div class="row text-center mb-4">
             <div class="col-md-3">
-                <div class="card text-bg-primary mb-3">
+                <div class="card text-bg-primary shadow-sm h-100">
                     <div class="card-body">
                         <h5 class="card-title">Total Treks</h5>
-                        <p class="card-text fs-3">0</p>
+                        <p class="card-text fs-2 fw-bold">{{ total_treks }}</p>
                     </div>
                 </div>
             </div>
             <div class="col-md-3">
-                <div class="card text-bg-success mb-3">
+                <div class="card text-bg-success shadow-sm h-100">
                     <div class="card-body">
                         <h5 class="card-title">Total Users</h5>
-                        <p class="card-text fs-3">0</p>
+                        <p class="card-text fs-2 fw-bold">{{ total_users }}</p>
                     </div>
                 </div>
             </div>
             <div class="col-md-3">
-                <div class="card text-bg-warning mb-3">
+                <div class="card text-bg-warning shadow-sm h-100 text-dark">
                     <div class="card-body">
                         <h5 class="card-title">Total Staff</h5>
-                        <p class="card-text fs-3">0</p>
+                        <p class="card-text fs-2 fw-bold">{{ total_staff }}</p>
                     </div>
                 </div>
             </div>
             <div class="col-md-3">
-                <div class="card text-bg-info mb-3">
+                <div class="card text-bg-info shadow-sm h-100 text-dark">
                     <div class="card-body">
                         <h5 class="card-title">Total Bookings</h5>
-                        <p class="card-text fs-3">0</p>
+                        <p class="card-text fs-2 fw-bold">{{ total_bookings }}</p>
                     </div>
                 </div>
             </div>
         </div>
         
-        <h4>Actions</h4>
-        <div class="list-group">
-            <a href="#" class="list-group-item list-group-item-action">Manage Treks</a>
-            <a href="#" class="list-group-item list-group-item-action">Manage Staff</a>
-            <a href="#" class="list-group-item list-group-item-action">Manage Users</a>
-            <a href="#" class="list-group-item list-group-item-action">View Bookings</a>
+        <div class="card shadow-sm">
+            <div class="card-header bg-dark text-white">
+                <h5 class="mb-0">Quick Actions</h5>
+            </div>
+            <div class="list-group list-group-flush">
+                <a href="{{ url_for('admin_manage_treks') }}" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                    Manage Treks
+                    <span class="badge bg-primary rounded-pill">&rarr;</span>
+                </a>
+                <a href="{{ url_for('admin_manage_users') }}" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                    Manage Users & Staff
+                    <span class="badge bg-primary rounded-pill">&rarr;</span>
+                </a>
+                <a href="{{ url_for('admin_manage_bookings') }}" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                    View All Bookings
+                    <span class="badge bg-primary rounded-pill">&rarr;</span>
+                </a>
+            </div>
         </div>
     </div>
 </div>

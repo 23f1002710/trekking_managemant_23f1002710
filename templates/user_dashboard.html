@@ -1,15 +1,102 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="row">
+<div class="row mb-4">
     <div class="col">
-        <h2>Trekker Dashboard</h2>
-        <hr>
-        <h4>Available Treks</h4>
-        <p>No treks available at the moment.</p>
-        
-        <h4 class="mt-4">My Bookings</h4>
-        <p>You have no bookings.</p>
+        <h2>Welcome, {{ current_user.username }}!</h2>
+        <p class="lead">Find and book your next adventure.</p>
+    </div>
+</div>
+
+<div class="row">
+    <!-- Available Treks Section -->
+    <div class="col-md-8">
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Available Treks</h5>
+            </div>
+            <div class="card-body bg-light">
+                <!-- Search/Filter Form -->
+                <form action="{{ url_for('user_dashboard') }}" method="GET" class="row g-2 mb-4">
+                    <div class="col-md-5">
+                        <input type="text" class="form-control" name="location" placeholder="Search by location..." value="{{ request.args.get('location', '') }}">
+                    </div>
+                    <div class="col-md-4">
+                        <select class="form-select" name="difficulty">
+                            <option value="">Any Difficulty</option>
+                            <option value="Easy" {% if request.args.get('difficulty') == 'Easy' %}selected{% endif %}>Easy</option>
+                            <option value="Moderate" {% if request.args.get('difficulty') == 'Moderate' %}selected{% endif %}>Moderate</option>
+                            <option value="Hard" {% if request.args.get('difficulty') == 'Hard' %}selected{% endif %}>Hard</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <button type="submit" class="btn btn-secondary w-100">Filter</button>
+                    </div>
+                </form>
+
+                <div class="row row-cols-1 row-cols-md-2 g-4">
+                    {% for trek in available_treks %}
+                    <div class="col">
+                        <div class="card h-100 border-0 shadow-sm">
+                            <div class="card-body">
+                                <h5 class="card-title text-primary">{{ trek.name }}</h5>
+                                <h6 class="card-subtitle mb-2 text-muted"><i class="bi bi-geo-alt"></i> {{ trek.location }}</h6>
+                                <p class="card-text mb-1">
+                                    <strong>Difficulty:</strong> 
+                                    {% if trek.difficulty == 'Easy' %} <span class="badge bg-success">Easy</span>
+                                    {% elif trek.difficulty == 'Moderate' %} <span class="badge bg-warning text-dark">Moderate</span>
+                                    {% else %} <span class="badge bg-danger">Hard</span> {% endif %}
+                                </p>
+                                <p class="card-text mb-1"><strong>Duration:</strong> {{ trek.duration }} days</p>
+                                <p class="card-text mb-3"><strong>Slots Available:</strong> {{ trek.available_slots }} / {{ trek.total_slots }}</p>
+                                
+                                <form action="{{ url_for('user_book_trek', trek_id=trek.id) }}" method="POST">
+                                    <button type="submit" class="btn btn-primary w-100" {% if trek.available_slots <= 0 %}disabled{% endif %}>
+                                        {% if trek.available_slots > 0 %}Book Now{% else %}Sold Out{% endif %}
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    {% else %}
+                    <div class="col-12">
+                        <p class="text-center text-muted">No treks found matching your criteria.</p>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Booking History Section -->
+    <div class="col-md-4">
+        <div class="card shadow-sm">
+            <div class="card-header bg-secondary text-white">
+                <h5 class="mb-0">My Bookings</h5>
+            </div>
+            <div class="list-group list-group-flush">
+                {% for booking in my_bookings %}
+                <div class="list-group-item">
+                    <div class="d-flex w-100 justify-content-between">
+                        <h6 class="mb-1">{{ booking.trek.name }}</h6>
+                        <small class="text-muted">{{ booking.booking_date.strftime('%Y-%m-%d') }}</small>
+                    </div>
+                    <p class="mb-1 text-muted small"><i class="bi bi-geo-alt"></i> {{ booking.trek.location }}</p>
+                    <small>
+                        Status: 
+                        {% if booking.status == 'Booked' %} <span class="badge bg-primary">Booked</span>
+                        {% elif booking.status == 'Cancelled' %} <span class="badge bg-danger">Cancelled</span>
+                        {% elif booking.status == 'Completed' %} <span class="badge bg-success">Completed</span>
+                        {% else %} <span class="badge bg-secondary">{{ booking.status }}</span> {% endif %}
+                    </small>
+                </div>
+                {% else %}
+                <div class="list-group-item text-center text-muted">
+                    <p class="mb-0">You haven't booked any treks yet.</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
     </div>
 </div>
 {% endblock %}
