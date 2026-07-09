@@ -1,27 +1,78 @@
 {% extends "base.html" %}
+{% block title %}Login — TrekManager{% endblock %}
+
+{% block extra_head %}
+<style>
+    body { background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%); min-height: 100vh; }
+    .login-card {
+        border: none;
+        border-radius: 1.25rem;
+        box-shadow: 0 24px 64px rgba(0,0,0,0.35);
+        overflow: hidden;
+    }
+    .login-brand {
+        background: linear-gradient(135deg, #0f3460, #16213e);
+        padding: 2.5rem 2rem 2rem;
+        text-align: center;
+        color: white;
+    }
+    .login-brand .bi { font-size: 3rem; color: #4ade80; }
+    .login-body { padding: 2rem 2.5rem 2.5rem; }
+    .form-control:focus { box-shadow: 0 0 0 0.2rem rgba(99,102,241,0.25); border-color: #6366f1; }
+    .btn-login {
+        background: linear-gradient(135deg, #6366f1, #0f3460);
+        border: none;
+        font-weight: 600;
+        letter-spacing: 0.04em;
+        padding: .65rem 1.5rem;
+    }
+    .btn-login:hover { opacity: .9; }
+</style>
+{% endblock %}
 
 {% block content %}
-<div class="row justify-content-center">
-    <div class="col-md-6">
-        <div class="card shadow-sm">
-            <div class="card-header bg-dark text-white">
-                <h4 class="mb-0">Login</h4>
+<div class="row justify-content-center mt-3">
+    <div class="col-sm-10 col-md-7 col-lg-5">
+        <div class="login-card">
+            <div class="login-brand">
+                <i class="bi bi-mountain-sun"></i>
+                <h2 class="mt-2 mb-1 fw-bold">TrekManager</h2>
+                <p class="opacity-75 mb-0 small">Sign in to continue your adventure</p>
             </div>
-            <div class="card-body">
-                <form method="POST" action="{{ url_for('login') }}">
+            <div class="login-body bg-white">
+                <h4 class="fw-semibold mb-4 text-dark">Welcome Back</h4>
+                <form method="POST" action="{{ url_for('login') }}" novalidate>
                     <div class="mb-3">
-                        <label for="username" class="form-label">Username</label>
-                        <input type="text" class="form-control" id="username" name="username" required>
+                        <label for="username" class="form-label fw-semibold text-muted small text-uppercase">Username</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light border-end-0"><i class="bi bi-person text-muted"></i></span>
+                            <input type="text" class="form-control border-start-0 ps-0" id="username"
+                                   name="username" placeholder="Enter your username" required autofocus>
+                        </div>
                     </div>
-                    <div class="mb-3">
-                        <label for="password" class="form-label">Password</label>
-                        <input type="password" class="form-control" id="password" name="password" required>
+                    <div class="mb-4">
+                        <label for="password" class="form-label fw-semibold text-muted small text-uppercase">Password</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light border-end-0"><i class="bi bi-lock text-muted"></i></span>
+                            <input type="password" class="form-control border-start-0 ps-0" id="password"
+                                   name="password" placeholder="Enter your password" required>
+                        </div>
                     </div>
-                    <button type="submit" class="btn btn-primary w-100">Login</button>
+                    <button type="submit" class="btn btn-login btn-primary w-100 text-white">
+                        <i class="bi bi-box-arrow-in-right me-2"></i>Sign In
+                    </button>
                 </form>
-                <div class="mt-3 text-center">
-                    <small>Don't have an account? <a href="{{ url_for('register') }}">Register here</a></small>
-                </div>
+
+                <hr class="my-4">
+                <p class="text-center text-muted mb-2">Don't have an account?</p>
+                <a href="{{ url_for('register') }}" class="btn btn-outline-secondary w-100">
+                    <i class="bi bi-person-plus me-2"></i>Create Account
+                </a>
+                <p class="text-center mt-3 mb-0">
+                    <a href="{{ url_for('index') }}" class="text-muted small">
+                        <i class="bi bi-arrow-left me-1"></i>Back to Home
+                    </a>
+                </p>
             </div>
         </div>
     </div>

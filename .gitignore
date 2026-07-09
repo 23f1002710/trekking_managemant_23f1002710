@@ -1,3 +1,32 @@
-.venv
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+
+# Flask / SQLite runtime
+instance/
+*.db
+*.sqlite3
+
+# Planning / internal docs
 app_structure.md
+timeline.md
+
+# AI / agent tooling (keep out of submission)
+.claude/
+.claudesync/
+.antigravity/
+.cursor/
+.cursorrules
+.aider*
+.github/copilot*
+CLAUDE.md
+*.agent.md
+
+# Editor / OS
+.vscode/
+.idea/
+.DS_Store
 timeline.md

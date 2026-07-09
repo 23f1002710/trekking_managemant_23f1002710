@@ -1,66 +1,107 @@
 {% extends "base.html" %}
+{% block title %}Explore Treks — TrekManager{% endblock %}
 
 {% block content %}
-<div class="row mb-4">
-    <div class="col">
-        <h2>Welcome, {{ current_user.username }}!</h2>
-        <p class="lead">Find and book your next adventure.</p>
+<div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+    <div>
+        <h2 class="fw-bold mb-0"><i class="bi bi-compass me-2 text-success"></i>Welcome, {{ current_user.username }}!</h2>
+        <p class="text-muted small mb-0">Find and book your next trekking adventure</p>
     </div>
+    <a href="{{ url_for('user_profile') }}" class="btn btn-outline-secondary btn-sm">
+        <i class="bi bi-person-circle me-1"></i>My Profile
+    </a>
 </div>
 
-<div class="row">
-    <!-- Available Treks Section -->
-    <div class="col-md-8">
-        <div class="card shadow-sm mb-4">
-            <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
-                <h5 class="mb-0">Available Treks</h5>
+<div class="row g-4">
+    <!-- Available Treks -->
+    <div class="col-lg-8">
+        <div class="card border-0 shadow-sm mb-4">
+            <div class="card-header bg-dark text-white">
+                <h6 class="mb-0 fw-semibold"><i class="bi bi-map me-2"></i>Available Treks</h6>
             </div>
             <div class="card-body bg-light">
-                <!-- Search/Filter Form -->
+                <!-- Search/Filter -->
                 <form action="{{ url_for('user_dashboard') }}" method="GET" class="row g-2 mb-4">
-                    <div class="col-md-5">
-                        <input type="text" class="form-control" name="location" placeholder="Search by location..." value="{{ request.args.get('location', '') }}">
+                    <div class="col-sm-5">
+                        <input type="text" class="form-control" name="search"
+                               placeholder="Search by name or location…" value="{{ search }}">
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-sm-4">
                         <select class="form-select" name="difficulty">
                             <option value="">Any Difficulty</option>
-                            <option value="Easy" {% if request.args.get('difficulty') == 'Easy' %}selected{% endif %}>Easy</option>
-                            <option value="Moderate" {% if request.args.get('difficulty') == 'Moderate' %}selected{% endif %}>Moderate</option>
-                            <option value="Hard" {% if request.args.get('difficulty') == 'Hard' %}selected{% endif %}>Hard</option>
+                            {% for d in ['Easy','Moderate','Hard'] %}
+                            <option value="{{ d }}" {% if difficulty == d %}selected{% endif %}>{{ d }}</option>
+                            {% endfor %}
                         </select>
                     </div>
-                    <div class="col-md-3">
-                        <button type="submit" class="btn btn-secondary w-100">Filter</button>
+                    <div class="col-sm-3">
+                        <button type="submit" class="btn btn-success w-100"><i class="bi bi-funnel me-1"></i>Filter</button>
                     </div>
+                    {% if search or difficulty %}
+                    <div class="col-12">
+                        <a href="{{ url_for('user_dashboard') }}" class="btn btn-sm btn-outline-secondary">
+                            <i class="bi bi-x me-1"></i>Clear Filters
+                        </a>
+                    </div>
+                    {% endif %}
                 </form>
 
-                <div class="row row-cols-1 row-cols-md-2 g-4">
+                <div class="row row-cols-1 row-cols-md-2 g-3">
                     {% for trek in available_treks %}
                     <div class="col">
                         <div class="card h-100 border-0 shadow-sm">
                             <div class="card-body">
-                                <h5 class="card-title text-primary">{{ trek.name }}</h5>
-                                <h6 class="card-subtitle mb-2 text-muted"><i class="bi bi-geo-alt"></i> {{ trek.location }}</h6>
-                                <p class="card-text mb-1">
-                                    <strong>Difficulty:</strong> 
-                                    {% if trek.difficulty == 'Easy' %} <span class="badge bg-success">Easy</span>
-                                    {% elif trek.difficulty == 'Moderate' %} <span class="badge bg-warning text-dark">Moderate</span>
-                                    {% else %} <span class="badge bg-danger">Hard</span> {% endif %}
+                                <div class="d-flex justify-content-between align-items-start mb-1">
+                                    {% if trek.difficulty == 'Easy' %}<span class="badge bg-success">Easy</span>
+                                    {% elif trek.difficulty == 'Moderate' %}<span class="badge bg-warning text-dark">Moderate</span>
+                                    {% else %}<span class="badge bg-danger">Hard</span>{% endif %}
+                                    <small class="text-muted"><i class="bi bi-clock me-1"></i>{{ trek.duration }} days</small>
+                                </div>
+                                <h6 class="card-title fw-bold mt-2 mb-1">{{ trek.name }}</h6>
+                                <p class="card-text text-muted small mb-2">
+                                    <i class="bi bi-geo-alt me-1"></i>{{ trek.location }}
                                 </p>
-                                <p class="card-text mb-1"><strong>Duration:</strong> {{ trek.duration }} days</p>
-                                <p class="card-text mb-3"><strong>Slots Available:</strong> {{ trek.available_slots }} / {{ trek.total_slots }}</p>
-                                
+                                {% if trek.description %}
+                                <p class="card-text small text-muted mb-2">{{ trek.description[:80] }}{% if trek.description|length > 80 %}…{% endif %}</p>
+                                {% endif %}
+                                {% if trek.start_date %}
+                                <p class="card-text small text-muted mb-2">
+                                    <i class="bi bi-calendar me-1"></i>{{ trek.start_date.strftime('%d %b %Y') }}
+                                    {% if trek.end_date %} → {{ trek.end_date.strftime('%d %b %Y') }}{% endif %}
+                                </p>
+                                {% endif %}
+                                <div class="d-flex justify-content-between small text-muted mb-1">
+                                    <span>Slots</span>
+                                    <span class="fw-semibold {% if trek.available_slots == 0 %}text-danger{% elif trek.available_slots < 5 %}text-warning{% else %}text-success{% endif %}">
+                                        {{ trek.available_slots }} / {{ trek.total_slots }}
+                                    </span>
+                                </div>
+                                <div class="progress mb-3" style="height:4px;">
+                                    <div class="progress-bar bg-success" style="width:{{ [((trek.available_slots / trek.total_slots * 100) if trek.total_slots > 0 else 0),100]|min }}%"></div>
+                                </div>
+
+                                {% if trek.id in booked_trek_ids %}
+                                <button class="btn btn-outline-success btn-sm w-100" disabled>
+                                    <i class="bi bi-check-circle me-1"></i>Already Booked
+                                </button>
+                                {% elif trek.available_slots <= 0 %}
+                                <button class="btn btn-outline-danger btn-sm w-100" disabled>
+                                    <i class="bi bi-x-circle me-1"></i>Sold Out
+                                </button>
+                                {% else %}
                                 <form action="{{ url_for('user_book_trek', trek_id=trek.id) }}" method="POST">
-                                    <button type="submit" class="btn btn-primary w-100" {% if trek.available_slots <= 0 %}disabled{% endif %}>
-                                        {% if trek.available_slots > 0 %}Book Now{% else %}Sold Out{% endif %}
+                                    <button type="submit" class="btn btn-success btn-sm w-100 fw-semibold">
+                                        <i class="bi bi-calendar-plus me-1"></i>Book Now
                                     </button>
                                 </form>
+                                {% endif %}
                             </div>
                         </div>
                     </div>
                     {% else %}
-                    <div class="col-12">
-                        <p class="text-center text-muted">No treks found matching your criteria.</p>
+                    <div class="col-12 text-center py-4 text-muted">
+                        <i class="bi bi-map" style="font-size:2.5rem;"></i>
+                        <p class="mt-2 mb-0">No open treks match your filters.</p>
                     </div>
                     {% endfor %}
                 </div>
@@ -68,31 +109,38 @@
         </div>
     </div>
 
-    <!-- Booking History Section -->
-    <div class="col-md-4">
-        <div class="card shadow-sm">
-            <div class="card-header bg-secondary text-white">
-                <h5 class="mb-0">My Bookings</h5>
+    <!-- My Bookings -->
+    <div class="col-lg-4">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-dark text-white d-flex justify-content-between">
+                <h6 class="mb-0 fw-semibold"><i class="bi bi-journal-check me-2"></i>My Bookings</h6>
+                <span class="badge bg-secondary">{{ my_bookings|length }}</span>
             </div>
-            <div class="list-group list-group-flush">
+            <div class="list-group list-group-flush" style="max-height:600px;overflow-y:auto;">
                 {% for booking in my_bookings %}
-                <div class="list-group-item">
-                    <div class="d-flex w-100 justify-content-between">
-                        <h6 class="mb-1">{{ booking.trek.name }}</h6>
-                        <small class="text-muted">{{ booking.booking_date.strftime('%Y-%m-%d') }}</small>
+                <div class="list-group-item px-3 py-3">
+                    <div class="d-flex justify-content-between align-items-start mb-1">
+                        <h6 class="mb-0 fw-bold small">{{ booking.trek.name }}</h6>
+                        {% if booking.status == 'Booked' %}<span class="badge bg-primary">Booked</span>
+                        {% elif booking.status == 'Cancelled' %}<span class="badge bg-danger">Cancelled</span>
+                        {% elif booking.status == 'Completed' %}<span class="badge bg-success">Completed</span>
+                        {% else %}<span class="badge bg-secondary">{{ booking.status }}</span>{% endif %}
                     </div>
-                    <p class="mb-1 text-muted small"><i class="bi bi-geo-alt"></i> {{ booking.trek.location }}</p>
-                    <small>
-                        Status: 
-                        {% if booking.status == 'Booked' %} <span class="badge bg-primary">Booked</span>
-                        {% elif booking.status == 'Cancelled' %} <span class="badge bg-danger">Cancelled</span>
-                        {% elif booking.status == 'Completed' %} <span class="badge bg-success">Completed</span>
-                        {% else %} <span class="badge bg-secondary">{{ booking.status }}</span> {% endif %}
-                    </small>
+                    <p class="mb-1 text-muted small"><i class="bi bi-geo-alt me-1"></i>{{ booking.trek.location }}</p>
+                    <p class="mb-2 text-muted small"><i class="bi bi-calendar me-1"></i>Booked {{ booking.booking_date.strftime('%d %b %Y') }}</p>
+                    {% if booking.status == 'Booked' %}
+                    <form action="{{ url_for('user_cancel_booking', booking_id=booking.id) }}" method="POST"
+                          onsubmit="return confirm('Cancel your booking for {{ booking.trek.name }}?')">
+                        <button type="submit" class="btn btn-sm btn-outline-danger w-100">
+                            <i class="bi bi-x-circle me-1"></i>Cancel Booking
+                        </button>
+                    </form>
+                    {% endif %}
                 </div>
                 {% else %}
-                <div class="list-group-item text-center text-muted">
-                    <p class="mb-0">You haven't booked any treks yet.</p>
+                <div class="list-group-item text-center py-4 text-muted">
+                    <i class="bi bi-journal-x mb-2 d-block" style="font-size:2rem;"></i>
+                    You haven't booked any treks yet.
                 </div>
                 {% endfor %}
             </div>

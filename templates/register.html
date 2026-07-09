@@ -1,38 +1,110 @@
 {% extends "base.html" %}
+{% block title %}Register — TrekManager{% endblock %}
+
+{% block extra_head %}
+<style>
+    body { background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%); min-height: 100vh; }
+    .register-card {
+        border: none;
+        border-radius: 1.25rem;
+        box-shadow: 0 24px 64px rgba(0,0,0,0.35);
+        overflow: hidden;
+    }
+    .register-brand {
+        background: linear-gradient(135deg, #064e3b, #0f3460);
+        padding: 2rem 2rem 1.75rem;
+        text-align: center;
+        color: white;
+    }
+    .register-brand .bi { font-size: 2.5rem; color: #4ade80; }
+    .register-body { padding: 2rem 2.5rem 2.5rem; }
+    .form-control:focus, .form-select:focus { box-shadow: 0 0 0 0.2rem rgba(16,185,129,0.25); border-color: #10b981; }
+    .role-selector .form-check { border: 2px solid #e9ecef; border-radius: .75rem; padding: 1rem 1rem 1rem 2.5rem; cursor: pointer; transition: border-color .15s, background .15s; }
+    .role-selector .form-check:has(input:checked) { border-color: #10b981; background: #f0fdf4; }
+    .btn-register { background: linear-gradient(135deg, #10b981, #064e3b); border: none; font-weight: 600; }
+    .btn-register:hover { opacity: .9; }
+</style>
+{% endblock %}
 
 {% block content %}
-<div class="row justify-content-center">
-    <div class="col-md-6">
-        <div class="card shadow-sm">
-            <div class="card-header bg-dark text-white">
-                <h4 class="mb-0">Register</h4>
+<div class="row justify-content-center mt-2">
+    <div class="col-sm-10 col-md-8 col-lg-6">
+        <div class="register-card">
+            <div class="register-brand">
+                <i class="bi bi-person-plus-fill"></i>
+                <h2 class="mt-2 mb-1 fw-bold">Join TrekManager</h2>
+                <p class="opacity-75 mb-0 small">Create your account and start exploring</p>
             </div>
-            <div class="card-body">
-                <form method="POST" action="{{ url_for('register') }}">
+            <div class="register-body bg-white">
+                <form method="POST" action="{{ url_for('register') }}" novalidate>
                     <div class="mb-3">
-                        <label for="username" class="form-label">Username</label>
-                        <input type="text" class="form-control" id="username" name="username" required>
+                        <label for="username" class="form-label fw-semibold text-muted small text-uppercase">Username</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light border-end-0"><i class="bi bi-person text-muted"></i></span>
+                            <input type="text" class="form-control border-start-0 ps-0" id="username"
+                                   name="username" placeholder="Choose a username" required autofocus>
+                        </div>
                     </div>
                     <div class="mb-3">
-                        <label for="email" class="form-label">Email</label>
-                        <input type="email" class="form-control" id="email" name="email" required>
+                        <label for="email" class="form-label fw-semibold text-muted small text-uppercase">Email Address</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light border-end-0"><i class="bi bi-envelope text-muted"></i></span>
+                            <input type="email" class="form-control border-start-0 ps-0" id="email"
+                                   name="email" placeholder="your@email.com" required>
+                        </div>
                     </div>
                     <div class="mb-3">
-                        <label for="password" class="form-label">Password</label>
-                        <input type="password" class="form-control" id="password" name="password" required>
+                        <label for="password" class="form-label fw-semibold text-muted small text-uppercase">Password</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light border-end-0"><i class="bi bi-lock text-muted"></i></span>
+                            <input type="password" class="form-control border-start-0 ps-0" id="password"
+                                   name="password" placeholder="Create a strong password" required minlength="6">
+                        </div>
                     </div>
-                    <div class="mb-3">
-                        <label for="role" class="form-label">I want to register as:</label>
-                        <select class="form-select" id="role" name="role" required>
-                            <option value="trekker">User (Trekker)</option>
-                            <option value="staff">Trek Staff</option>
-                        </select>
-                        <div class="form-text">Staff registration requires admin approval before login.</div>
+                    <div class="mb-4">
+                        <label class="form-label fw-semibold text-muted small text-uppercase">I am registering as</label>
+                        <div class="role-selector d-flex gap-3">
+                            <div class="form-check flex-fill">
+                                <input class="form-check-input" type="radio" name="role" id="roleTrekker" value="trekker" checked>
+                                <label class="form-check-label" for="roleTrekker">
+                                    <strong class="d-block"><i class="bi bi-person-hiking me-1 text-success"></i> Trekker</strong>
+                                    <small class="text-muted">Browse & book treks</small>
+                                </label>
+                            </div>
+                            <div class="form-check flex-fill">
+                                <input class="form-check-input" type="radio" name="role" id="roleStaff" value="staff">
+                                <label class="form-check-label" for="roleStaff">
+                                    <strong class="d-block"><i class="bi bi-briefcase me-1 text-info"></i> Trek Staff</strong>
+                                    <small class="text-muted">Manage & guide treks</small>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="alert alert-warning mt-2 py-2 small mb-0" id="staffNotice" style="display:none;">
+                            <i class="bi bi-info-circle me-1"></i> Staff accounts require <strong>admin approval</strong> before access.
+                        </div>
                     </div>
-                    <button type="submit" class="btn btn-success w-100">Register</button>
+                    <button type="submit" class="btn btn-register btn-success w-100 text-white">
+                        <i class="bi bi-check-circle me-2"></i>Create Account
+                    </button>
                 </form>
+                <hr class="my-4">
+                <p class="text-center text-muted mb-2">Already have an account?</p>
+                <a href="{{ url_for('login') }}" class="btn btn-outline-secondary w-100">
+                    <i class="bi bi-box-arrow-in-right me-2"></i>Sign In
+                </a>
             </div>
         </div>
     </div>
 </div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Show staff notice without using core JS logic
+    document.querySelectorAll('input[name="role"]').forEach(function(radio) {
+        radio.addEventListener('change', function() {
+            document.getElementById('staffNotice').style.display = this.value === 'staff' ? 'block' : 'none';
+        });
+    });
+</script>
 {% endblock %}

@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+{% block title %}My Profile — TrekManager{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+        <div class="mb-4">
+            <h2 class="fw-bold mb-0"><i class="bi bi-person-circle me-2 text-primary"></i>My Profile</h2>
+            <p class="text-muted small">Update your account details</p>
+        </div>
+
+        <!-- Stats -->
+        <div class="row g-3 mb-4">
+            <div class="col-4 text-center">
+                <div class="card border-0 shadow-sm py-3">
+                    <div class="fs-3 fw-bold text-primary">{{ booking_count }}</div>
+                    <div class="text-muted small">Total Bookings</div>
+                </div>
+            </div>
+            <div class="col-4 text-center">
+                <div class="card border-0 shadow-sm py-3">
+                    <div class="fs-3 fw-bold text-success">
+                        <i class="bi bi-person-hiking"></i>
+                    </div>
+                    <div class="text-muted small">Trekker</div>
+                </div>
+            </div>
+            <div class="col-4 text-center">
+                <div class="card border-0 shadow-sm py-3">
+                    <div class="fs-3 fw-bold text-info">
+                        <span class="badge bg-success">Active</span>
+                    </div>
+                    <div class="text-muted small">Account</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Edit Form -->
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-dark text-white fw-semibold">
+                <i class="bi bi-pencil me-2"></i>Edit Profile
+            </div>
+            <div class="card-body">
+                <form method="POST" action="{{ url_for('user_profile') }}" novalidate>
+                    <div class="mb-3">
+                        <label for="username" class="form-label fw-semibold">Username</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light"><i class="bi bi-person text-muted"></i></span>
+                            <input type="text" class="form-control" id="username" name="username"
+                                   value="{{ current_user.username }}" required>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="email" class="form-label fw-semibold">Email Address</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light"><i class="bi bi-envelope text-muted"></i></span>
+                            <input type="email" class="form-control" id="email" name="email"
+                                   value="{{ current_user.email }}" required>
+                        </div>
+                    </div>
+                    <div class="mb-4">
+                        <label for="password" class="form-label fw-semibold">New Password</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light"><i class="bi bi-lock text-muted"></i></span>
+                            <input type="password" class="form-control" id="password" name="password"
+                                   placeholder="Leave blank to keep current password">
+                        </div>
+                        <div class="form-text">Only fill in if you want to change your password.</div>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary fw-semibold">
+                            <i class="bi bi-check-circle me-2"></i>Save Changes
+                        </button>
+                        <a href="{{ url_for('user_dashboard') }}" class="btn btn-outline-secondary">
+                            <i class="bi bi-arrow-left me-1"></i>Back to Dashboard
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

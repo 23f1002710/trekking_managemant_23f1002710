@@ -3,32 +3,100 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TMA - Trekking Management Application</title>
+    <meta name="description" content="Trekking Management Application — Discover, Book, and Manage Trekking Adventures">
+    <title>{% block title %}TMA — Trekking Management App{% endblock %}</title>
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <!-- Google Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- App theme (Bootstrap customisation layer) -->
+    <link href="{{ url_for('static', filename='theme.css') }}" rel="stylesheet">
+    {% block extra_head %}{% endblock %}
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
         <div class="container">
-            <a class="navbar-brand" href="{{ url_for('index') }}">TMA</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <a class="navbar-brand" href="{{ url_for('index') }}">
+                <i class="bi bi-mountain-sun text-success me-1"></i> TrekManager
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                    aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
+                <ul class="navbar-nav me-auto">
                     {% if current_user.is_authenticated %}
-                        <li class="nav-item">
-                            <span class="nav-link text-light">Welcome, {{ current_user.username }} ({{ current_user.role }})</span>
+                        {% if current_user.role == 'admin' %}
+                            <li class="nav-item">
+                                <a class="nav-link {% if request.endpoint == 'admin_dashboard' %}active{% endif %}"
+                                   href="{{ url_for('admin_dashboard') }}"><i class="bi bi-speedometer2 me-1"></i>Dashboard</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link {% if request.endpoint == 'admin_manage_treks' %}active{% endif %}"
+                                   href="{{ url_for('admin_manage_treks') }}"><i class="bi bi-map me-1"></i>Treks</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link {% if request.endpoint == 'admin_manage_users' %}active{% endif %}"
+                                   href="{{ url_for('admin_manage_users') }}"><i class="bi bi-people me-1"></i>Users & Staff</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link {% if request.endpoint == 'admin_manage_bookings' %}active{% endif %}"
+                                   href="{{ url_for('admin_manage_bookings') }}"><i class="bi bi-journal-check me-1"></i>Bookings</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link {% if request.endpoint == 'admin_search' %}active{% endif %}"
+                                   href="{{ url_for('admin_search') }}"><i class="bi bi-search me-1"></i>Search</a>
+                            </li>
+                        {% elif current_user.role == 'staff' %}
+                            <li class="nav-item">
+                                <a class="nav-link {% if request.endpoint == 'staff_dashboard' %}active{% endif %}"
+                                   href="{{ url_for('staff_dashboard') }}"><i class="bi bi-speedometer2 me-1"></i>My Treks</a>
+                            </li>
+                        {% else %}
+                            <li class="nav-item">
+                                <a class="nav-link {% if request.endpoint == 'user_dashboard' %}active{% endif %}"
+                                   href="{{ url_for('user_dashboard') }}"><i class="bi bi-compass me-1"></i>Explore Treks</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link {% if request.endpoint == 'user_profile' %}active{% endif %}"
+                                   href="{{ url_for('user_profile') }}"><i class="bi bi-person-circle me-1"></i>Profile</a>
+                            </li>
+                        {% endif %}
+                    {% endif %}
+                </ul>
+                <ul class="navbar-nav ms-auto align-items-center">
+                    {% if current_user.is_authenticated %}
+                        <li class="nav-item me-2">
+                            <span class="nav-link text-light opacity-75">
+                                <i class="bi bi-person-fill me-1"></i>
+                                {{ current_user.username }}
+                                <span class="badge
+                                    {% if current_user.role == 'admin' %}bg-danger
+                                    {% elif current_user.role == 'staff' %}bg-info text-dark
+                                    {% else %}bg-success{% endif %} ms-1">
+                                    {{ current_user.role | capitalize }}
+                                </span>
+                            </span>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-danger" href="{{ url_for('logout') }}">Logout</a>
+                            <a class="btn btn-sm btn-outline-light" href="{{ url_for('logout') }}">
+                                <i class="bi bi-box-arrow-right me-1"></i>Logout
+                            </a>
                         </li>
                     {% else %}
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('login') }}">Login</a>
+                        <li class="nav-item me-2">
+                            <a class="btn btn-sm btn-outline-light" href="{{ url_for('login') }}">
+                                <i class="bi bi-box-arrow-in-right me-1"></i>Login
+                            </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('register') }}">Register</a>
+                            <a class="btn btn-sm btn-success" href="{{ url_for('register') }}">
+                                <i class="bi bi-person-plus me-1"></i>Register
+                            </a>
                         </li>
                     {% endif %}
                 </ul>
@@ -36,12 +104,17 @@
         </div>
     </nav>
 
-    <div class="container mt-4">
-        {% with messages = get_flashed_messages() %}
+    <div class="container mt-4 mb-5">
+        {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
-                {% for message in messages %}
-                    <div class="alert alert-info" role="alert">
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category if category != 'message' else 'info' }} alert-dismissible fade show shadow-sm" role="alert">
+                        {% if category == 'success' %}<i class="bi bi-check-circle-fill me-2"></i>
+                        {% elif category == 'danger' %}<i class="bi bi-exclamation-triangle-fill me-2"></i>
+                        {% elif category == 'warning' %}<i class="bi bi-exclamation-circle-fill me-2"></i>
+                        {% else %}<i class="bi bi-info-circle-fill me-2"></i>{% endif %}
                         {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>
                 {% endfor %}
             {% endif %}
@@ -50,7 +123,16 @@
         {% block content %}{% endblock %}
     </div>
 
+    <footer class="bg-dark text-light py-3 mt-auto">
+        <div class="container text-center">
+            <small class="opacity-50">
+                <i class="bi bi-mountain-sun me-1"></i> TrekManager &copy; 2026 — Trekking Management Application
+            </small>
+        </div>
+    </footer>
+
     <!-- Bootstrap JS Bundle -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    {% block extra_js %}{% endblock %}
 </body>
 </html>

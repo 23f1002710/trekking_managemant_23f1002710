@@ -1,0 +1,87 @@
+/* ============================================================
+   TrekManager — Theme layer over Bootstrap 5
+   Palette harmonised with the landing page (index.html):
+   navy #0f1e3c → deep-blue #1a3a6b → forest-green #0d5c3a,
+   accent green #10b981 / #4ade80.
+   Pure CSS — no JavaScript, no extra frameworks.
+   ============================================================ */
+
+:root {
+    --tm-navy:      #0f1e3c;
+    --tm-blue:      #1a3a6b;
+    --tm-green:     #0d5c3a;
+    --tm-accent:    #10b981;
+    --tm-accent-2:  #4ade80;
+    --tm-ink:       #1e293b;
+    --tm-radius:    0.9rem;
+    --tm-shadow:    0 8px 28px rgba(15, 30, 60, 0.08);
+    --tm-shadow-lg: 0 16px 40px rgba(15, 30, 60, 0.14);
+}
+
+body {
+    font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background-color: #eef2f7;
+    color: var(--tm-ink);
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+/* ---- Navbar: gradient instead of flat dark ---- */
+.navbar.bg-dark {
+    background: linear-gradient(100deg, var(--tm-navy) 0%, var(--tm-blue) 60%, var(--tm-green) 130%) !important;
+}
+.navbar-brand { font-weight: 800; letter-spacing: 0.03em; }
+.nav-link { transition: color .15s, opacity .15s; }
+.nav-link:hover { color: var(--tm-accent-2) !important; }
+.nav-link.active { font-weight: 600; color: #fff !important; }
+
+/* ---- Cards: softer radius + hover lift ---- */
+.card {
+    border-radius: var(--tm-radius);
+    transition: transform .2s ease, box-shadow .2s ease;
+}
+.card.shadow-sm { box-shadow: var(--tm-shadow) !important; }
+.card.shadow-sm:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--tm-shadow-lg) !important;
+}
+.card-header { border-top-left-radius: var(--tm-radius) !important; border-top-right-radius: var(--tm-radius) !important; }
+
+/* Gradient dark card headers (used across dashboards) */
+.card-header.bg-dark {
+    background: linear-gradient(100deg, var(--tm-navy), var(--tm-blue)) !important;
+    border: none;
+}
+
+/* ---- Buttons ---- */
+.btn { border-radius: 0.6rem; font-weight: 500; }
+.btn-primary {
+    background: var(--tm-blue); border-color: var(--tm-blue);
+}
+.btn-primary:hover { background: var(--tm-navy); border-color: var(--tm-navy); }
+.btn-success { background: var(--tm-accent); border-color: var(--tm-accent); }
+.btn-success:hover { background: #0e9f6e; border-color: #0e9f6e; }
+
+/* ---- Badges ---- */
+.badge { font-weight: 600; letter-spacing: .02em; border-radius: 0.5rem; }
+.badge-pending { animation: pulse 1.5s infinite; }
+@keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.55; } }
+
+/* ---- Progress bars (charts) ---- */
+.progress { border-radius: 0.5rem; background: #e2e8f0; }
+.progress-bar { transition: width .5s ease; }
+
+/* ---- Forms ---- */
+.form-control:focus, .form-select:focus {
+    border-color: var(--tm-accent);
+    box-shadow: 0 0 0 0.2rem rgba(16, 185, 129, 0.15);
+}
+
+/* ---- Tables ---- */
+.table > :not(caption) > * > * { vertical-align: middle; }
+
+/* ---- Footer ---- */
+footer.bg-dark {
+    background: linear-gradient(100deg, var(--tm-navy), var(--tm-green)) !important;
+}
